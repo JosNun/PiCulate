@@ -19,36 +19,31 @@ type dot struct {
 const width = 100
 const height = 100
 
-var dots = make([]dot, 0)
+var in, out int = 0, 0
 
-func update() {
+func setup(imd *imdraw.IMDraw) {
+	imd.Color = colornames.Gray
+	imd.Push(pixel.V(0, 0))
+	imd.Circle(width, 5)
+}
+
+func render(imd *imdraw.IMDraw) {
+
 	newDot := dot{
 		X: rand.Intn(width + 1),
 		Y: rand.Intn(height + 1),
 	}
 
-	dots = append(dots, newDot)
-}
-
-func render(imd *imdraw.IMDraw) {
-	var in, out int
-
-	imd.Color = colornames.Gray
-	imd.Push(pixel.V(0, 0))
-	imd.Circle(width, 5)
-
-	for _, dot := range dots {
-		if math.Sqrt(math.Pow(float64(dot.X), 2)+math.Pow(float64(dot.Y), 2)) < width {
-			imd.Color = colornames.Green
-			in++
-		} else {
-			imd.Color = colornames.Red
-			out++
-		}
-
-		imd.Push(pixel.V(float64(dot.X), float64(dot.Y)))
-		imd.Circle(1, 5)
+	if math.Sqrt(math.Pow(float64(newDot.X), 2)+math.Pow(float64(newDot.Y), 2)) < width {
+		imd.Color = colornames.Green
+		in++
+	} else {
+		imd.Color = colornames.Red
+		out++
 	}
+
+	imd.Push(pixel.V(float64(newDot.X), float64(newDot.Y)))
+	imd.Circle(1, 5)
 
 	total := in + out
 
@@ -71,9 +66,10 @@ func run() {
 
 	imd := imdraw.New(nil)
 
+	win.Clear(colornames.Skyblue)
+	setup(imd)
+
 	for !win.Closed() {
-		win.Clear(colornames.Skyblue)
-		update()
 		render(imd)
 		imd.Draw(win)
 		win.Update()
