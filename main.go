@@ -16,8 +16,8 @@ type dot struct {
 	Y int
 }
 
-const width = 100
-const height = 100
+const width = 1000
+const height = 1000
 
 var in, out int = 0, 0
 
